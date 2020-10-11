@@ -1,0 +1,235 @@
+---
+title: "Resolución tarea 2"
+author: "Minor Solano Gutiérrez"
+date: "10/10/2020"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 6
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+ 
+   
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Regresión escalonada
+
+En el siguiente trabajo se realizará un ejemplo de Regresión escalonada
+
+
+## Cargar la función replicar_reg_scal()
+
+Esta función permite replicar la regresión escalonada (stepwise regression) usando simulaciones.
+La función devuelve la proporción de réplicas que produjeron al menos una variable con un efecto significativo (i. e. falsos positivos)
+
+Argumentos:
+itr: numero de iteraciones o replicas (el valor por defecto es 100)
+nvars: numero de variables para representar (el valor por defecto es 50)
+n: número de observaciones en cada variable (el valor por defecto es 30)
+alpha = umbral para definir significancia estadística en los valores de p
+
+```{r primero}
+source("./scripts/replicar_reg_scal.R")
+```
+## Calculo con un alfa = 0.05
+Definir significancia estadística en los valores de p = 0.05
+
+### Calculo de la proporción de falsos positivos para 10 números de variables
+
+```{r segundo}
+#números de variables = 10 (argumento nvars)
+
+nvars10 <- c(10, 10, 10)
+
+
+falsos_positivos10.1 <- replicar_reg_scal(itr = 100, n = 30, nvars = 10, alfa = 0.05)
+falsos_positivos10.2 <- replicar_reg_scal(itr = 100, n = 30, nvars = 10, alfa = 0.05)
+falsos_positivos10.3 <- replicar_reg_scal(itr = 100, n = 30, nvars = 10, alfa = 0.05)
+
+falsos_positivos10 <- c(falsos_positivos10.1, falsos_positivos10.2, falsos_positivos10.3)
+
+```
+
+### Calculo de la proporción de falsos positivos para 20 números de variables
+
+```{r}
+#números de variables = 20 (argumento nvars)
+
+nvars20 <- c(20, 20, 20)
+
+falsos_positivos20.1 <- replicar_reg_scal(itr = 100, n = 30, nvars = 20, alfa = 0.05)
+falsos_positivos20.2 <- replicar_reg_scal(itr = 100, n = 30, nvars = 20, alfa = 0.05)
+falsos_positivos20.3 <- replicar_reg_scal(itr = 100, n = 30, nvars = 20, alfa = 0.05)
+
+falsos_positivos20 <- c(falsos_positivos20.1, falsos_positivos20.2, falsos_positivos20.3)
+
+```
+
+### Calculo de la proporción de falsos positivos para 50 números de variables
+
+```{r}
+#números de variables = 50 (argumento nvars)
+
+nvars50 <- c(50, 50, 50)
+
+falsos_positivos50.1 <- replicar_reg_scal(itr = 100, n = 30, nvars = 50, alfa = 0.05)
+falsos_positivos50.2 <- replicar_reg_scal(itr = 100, n = 30, nvars = 50, alfa = 0.05)
+falsos_positivos50.3 <- replicar_reg_scal(itr = 100, n = 30, nvars = 50, alfa = 0.05)
+
+falsos_positivos50 <- c(falsos_positivos50.1, falsos_positivos50.2, falsos_positivos50.3)
+```
+
+### Calculo de la proporción de falsos positivos para 100 números de variables
+
+```{r}
+#números de variables = 100 (argumento nvars)
+
+nvars100 <- c(100, 100, 100)
+
+falsos_positivos100.1 <- replicar_reg_scal(itr = 100, n = 30, nvars = 100, alfa = 0.05)
+falsos_positivos100.2 <- replicar_reg_scal(itr = 100, n = 30, nvars = 100, alfa = 0.05)
+falsos_positivos100.3 <- replicar_reg_scal(itr = 100, n = 30, nvars = 100, alfa = 0.05)
+
+falsos_positivos100 <- c(falsos_positivos100.1, falsos_positivos100.2, falsos_positivos100.3)
+```
+
+### Figura comparativa entre número de variables y la proporción de falsos positivos.
+
+En la siguiente figura observarán la relación entre el número de variables y la proporción de falsos positivos calculadas anteriormente
+
+```{r, fig.align='center'}
+nvars <- c(nvars10, nvars20, nvars50, nvars100)
+
+falsos_positivos <- c(falsos_positivos10, falsos_positivos20, falsos_positivos50, falsos_positivos100)
+
+relacion1 <- lm(falsos_positivos ~ nvars)
+summary(relacion1)
+
+eq <- substitute(italic(y) == a + b %.% italic(x)*","~~italic(r)^2~"="~r2, 
+                   list(a = format(unname(coef(relacion1)[1]), digits = 2),
+                        b = format(unname(coef(relacion1)[2]), digits = 2),
+                        r2 = format(summary(relacion1)$r.squared, digits = 3)))
+as.character(as.expression(eq))
+
+par(bty='n')
+plot(falsos_positivos ~ nvars, ylab = "Falsos positivos", xlab = expression(paste("nvars")),  cex = 1.75, axes = F, main = "")
+axis(2, las = 1, seq(from = 0, to = 1, by = 0.1))
+axis(1, seq(from = 0, to = 100, by = 10))
+X1 <- grconvertX(0, "npc")
+Y1 <- grconvertY(1, "npc") 
+legend(X1, Y1, bty = "n",
+       cex = 1,legend = eq, border = T, x.intersp = 0.1, y.intersp = 0.3, horiz = T)
+box(bty = "l")
+abline(relacion1)
+
+```
+
+## Calculo con un alfa = 0.01
+Definir significancia estadística en los valores de p = 0.01
+
+### Calculo de la proporción de falsos positivos para 10 números de variables
+
+```{r}
+#números de variables = 10 (argumento nvars)
+
+nvars10 <- c(10, 10, 10)
+
+falsos_positivos10.1 <- replicar_reg_scal(itr = 100, n = 30, nvars = 10, alfa = 0.01)
+falsos_positivos10.2 <- replicar_reg_scal(itr = 100, n = 30, nvars = 10, alfa = 0.01)
+falsos_positivos10.3 <- replicar_reg_scal(itr = 100, n = 30, nvars = 10, alfa = 0.01)
+
+falsos_positivos10 <- c(falsos_positivos10.1, falsos_positivos10.2, falsos_positivos10.3)
+```
+### Calculo de la proporción de falsos positivos para 20 números de variables
+
+```{r}
+#números de variables = 20 (argumento nvars)
+
+nvars20 <- c(20, 20, 20)
+
+falsos_positivos20.1 <- replicar_reg_scal(itr = 100, n = 30, nvars = 20, alfa = 0.01)
+falsos_positivos20.2 <- replicar_reg_scal(itr = 100, n = 30, nvars = 20, alfa = 0.01)
+falsos_positivos20.3 <- replicar_reg_scal(itr = 100, n = 30, nvars = 20, alfa = 0.01)
+
+falsos_positivos20 <- c(falsos_positivos20.1, falsos_positivos20.2, falsos_positivos20.3)
+
+```
+
+### Calculo de la proporción de falsos positivos para 50 números de variables
+
+```{r}
+#números de variables = 50 (argumento nvars)
+
+nvars50 <- c(50, 50, 50)
+
+falsos_positivos50.1 <- replicar_reg_scal(itr = 100, n = 30, nvars = 50, alfa = 0.01)
+falsos_positivos50.2 <- replicar_reg_scal(itr = 100, n = 30, nvars = 50, alfa = 0.01)
+falsos_positivos50.3 <- replicar_reg_scal(itr = 100, n = 30, nvars = 50, alfa = 0.01)
+
+falsos_positivos50 <- c(falsos_positivos50.1, falsos_positivos50.2, falsos_positivos50.3)
+
+```
+
+### Calculo de la proporción de falsos positivos para 100 números de variables
+
+```{r}
+#números de variables = 100 (argumento nvars)
+
+nvars100 <- c(100, 100, 100)
+
+falsos_positivos100.1 <- replicar_reg_scal(itr = 100, n = 30, nvars = 100, alfa = 0.01)
+falsos_positivos100.2 <- replicar_reg_scal(itr = 100, n = 30, nvars = 100, alfa = 0.01)
+falsos_positivos100.3 <- replicar_reg_scal(itr = 100, n = 30, nvars = 100, alfa = 0.01)
+
+falsos_positivos100 <- c(falsos_positivos100.1, falsos_positivos100.2, falsos_positivos100.3)
+```
+### Figura comparativa entre número de variables y la proporción de falsos positivos.
+
+En la siguiente figura observarán la relación entre el número de variables y la proporción de falsos positivos calculadas anteriormente
+
+
+```{r, fig.align='center'}
+nvars <- c(nvars10, nvars20, nvars50, nvars100)
+
+falsos_positivos <- c(falsos_positivos10, falsos_positivos20, falsos_positivos50, falsos_positivos100)
+
+relacion2 <- lm(falsos_positivos ~ nvars)
+summary(relacion2)
+
+eq2 <- substitute(italic(y) == a + b %.% italic(x)*","~~italic(r)^2~"="~r2, 
+                   list(a = format(unname(coef(relacion2)[1]), digits = 2),
+                        b = format(unname(coef(relacion2)[2]), digits = 2),
+                        r2 = format(summary(relacion2)$r.squared, digits = 3)))
+as.character(as.expression(eq2))
+
+par(bty='n')
+plot(falsos_positivos ~ nvars, ylab = "Falsos positivos", xlab = expression(paste("nvars")),  cex = 1.75, axes = F, main = "")
+axis(2, las = 1, seq(from = 0, to = 1, by = 0.05))
+axis(1, seq(from = 0, to = 100, by = 10))
+X1 <- grconvertX(0, "npc")
+Y1 <- grconvertY(1, "npc") 
+legend(X1, Y1, bty = "n",
+       cex = 1,legend = eq2, border = T, x.intersp = 0.1, y.intersp = 0.3, horiz = T)
+box(bty = "l")
+abline(relacion2)
+
+```
+
+# Figura de organismo no humano preferido
+
+![](C:/Users/Usuario/Desktop/2020 - II/Cursos/curso_reproducible1/imagen/1.jpg)
+
+En la foto pupas de la Avispa *Aphytis* sp. parasitoide de la escama *Diaspis boisduvalii* en el cultivo de banano (*Musa* AAA) en Costa Rica. Tomada por M. Solano, 2018
+
+Información de la sesión
+```{r echo=FALSE}
+
+sessionInfo()
+
+osVersion
+
+```
