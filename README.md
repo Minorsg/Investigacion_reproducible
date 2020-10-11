@@ -5,4 +5,4 @@
 - Marcelo Araya (marcelo.araya@ucr.ac.cr) Escuela de Biología, oficina #4A
 
 Tarea 2
-Minor Solano Gutiérrez
+Minor Solano Gutiérrez (minor.solano24@gmail.com)
